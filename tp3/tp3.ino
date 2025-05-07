@@ -8,37 +8,45 @@
 // - w apaga el led interno (pin 13)
 
 // Configuración de pines para el módulo Bluetooth
-SoftwareSerial bluetooth(10, 11); // RX, TX
+SoftwareSerial bluetooth(11, 13);  // RX, TX
 
 // Pin del LED interno
 const int ledPin = 13;
+
 // Definición de pines para el motor
-#define EN_A 6 
+#define EN_A 6
 #define IN_1 4
 #define IN_2 5
+// Definición de pines para el segundo motor
+#define EN_B 10
+#define IN_3 9
+#define IN_4 8
 
 // Función para controlar el motor
-void setMotor(int speed) {
-  if (speed > 0) {
-    // Movimiento hacia adelante
-    digitalWrite(IN_1, HIGH);
-    digitalWrite(IN_2, LOW);
-  } else if (speed < 0) {
-    // Movimiento hacia atrás
-    digitalWrite(IN_1, LOW);
-    digitalWrite(IN_2, HIGH);
-    speed = -speed; // Convertir a positivo para PWM
-  } else {
-    // Detener el motor
-    digitalWrite(IN_1, LOW);
-    digitalWrite(IN_2, LOW);
-  }
+void setMotor(int speed, int in1, int in2, int ena) {
+    if (speed > 0) {
+        // Movimiento hacia adelante
+        digitalWrite(in1, HIGH);
+        digitalWrite(in2, LOW);
+    } else if (speed < 0) {
+        // Movimiento hacia atrás
+        digitalWrite(in1, LOW);
+        digitalWrite(in2, HIGH);
+        speed = -speed;  // Convertir a positivo para PWM
+    } else {
+        // Detener el motor
+        digitalWrite(in1, LOW);
+        digitalWrite(in2, LOW);
+    }
 
-  // Aplicar velocidad con PWM
-  analogWrite(EN_A, constrain(speed, 0, 255));
+    // Aplicar velocidad con PWM
+    analogWrite(ena, constrain(speed, 0, 255));
+    Serial.println(speed);
+}
 
-  Serial.print("Motor speed set to: ");
-  Serial.println(speed);
+void setMotors(int speed1, int speed2) {
+    setMotor(speed1, IN_1, IN_2, EN_A);
+    setMotor(speed2, IN_3, IN_4, EN_B);
 }
 
 void setup() {
@@ -52,33 +60,51 @@ void setup() {
     pinMode(EN_A, OUTPUT);
     pinMode(IN_1, OUTPUT);
     pinMode(IN_2, OUTPUT);
-
-    Serial.println("Esperando comandos por Bluetooth...");
+    pinMode(EN_B, OUTPUT);
+    pinMode(IN_3, OUTPUT);
+    pinMode(IN_4, OUTPUT);
 }
 
 void loop() {
-    if (!bluetooth.available()) return; // Si no hay datos, salir de la función
-    char command = bluetooth.read(); // Leer el comando recibido
+    if (!bluetooth.available()) return;  // Si no hay datos, salir de la función
+    char command = bluetooth.read();     // Leer el comando recibido
     switch (command) {
-        case 'F': // Avanzar
-            setMotor(100);
+        case 'F':  // Avanzar
+            setMotors(100, 100);
             break;
-        case 'R': // Retroceder
-            setMotor(-100);
+        case 'B':  // Retroceder
+            setMotors(-100, -100);
             break;
-        case 'S': // Detener
-            setMotor(0);
+        case 'S':  // Detener
+            setMotors(0, 0);
             break;
-        case 'W': // Encender LED
-            digitalWrite(ledPin, HIGH);
-            Serial.println("LED encendido");
+        case 'L':  // Girar a la izquierda
+            setMotors(-50, 50);
             break;
-        case 'w': // Apagar LED
-            digitalWrite(ledPin, LOW);
-            Serial.println("LED apagado");
+        case 'R':  // Girar a la derecha
+            setMotors(50, -50);
             break;
+        case 'G':  // Avanzar hacia la izquierda
+            setMotors(50, 100);
+            break;
+        case 'I':  // Avanzar hacia la derecha
+            setMotors(100, 50);
+            break;
+        case 'H':  // Retroceder hacia la izquierda
+            setMotors(-50, -100);
+            break;
+        case 'J':  // Backward Right
+            setMotors(-100, -50);
+            break;
+        // case 'W':  // Encender LED
+        //     digitalWrite(ledPin, HIGH);
+        //     Serial.println("LED encendido");
+        //     break;
+        // case 'w':  // Apagar LED
+        //     digitalWrite(ledPin, LOW);
+        //     Serial.println("LED apagado");
+        //     break;
         default:
-            Serial.println("Comando no reconocido");
             break;
     }
 }
