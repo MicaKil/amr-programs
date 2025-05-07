@@ -72,10 +72,10 @@ void loop() {
             setMotors(0, 0);
             break;
         case 'L':  // Girar a la izquierda
-            setMotors(-50, 50);
+            setMotors(-100, 100);
             break;
         case 'R':  // Girar a la derecha
-            setMotors(50, -50);
+            setMotors(100, -100);
             break;
         case 'G':  // Avanzar hacia la izquierda
             setMotors(50, 100);
