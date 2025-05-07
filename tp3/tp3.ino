@@ -1,12 +1,5 @@
 #include <SoftwareSerial.h>
 
-// Hacer interprete de comandos por bluetooth:
-// - F ejecuta setMotor(100)
-// - R ejecuta setMotor(-100)
-// - S ejecuta setMotor(0)
-// - W enciende el led interno (pin 13)
-// - w apaga el led interno (pin 13)
-
 // Configuración de pines para el módulo Bluetooth
 SoftwareSerial bluetooth(11, 13);  // RX, TX
 
@@ -96,14 +89,6 @@ void loop() {
         case 'J':  // Backward Right
             setMotors(-100, -50);
             break;
-        // case 'W':  // Encender LED
-        //     digitalWrite(ledPin, HIGH);
-        //     Serial.println("LED encendido");
-        //     break;
-        // case 'w':  // Apagar LED
-        //     digitalWrite(ledPin, LOW);
-        //     Serial.println("LED apagado");
-        //     break;
         default:
             break;
     }
