@@ -33,7 +33,7 @@ void setMotor(int speed, int in1, int in2, int ena) {
     }
 
     // Aplicar velocidad con PWM
-    analogWrite(ena, constrain(speed, 0, 255));
+    analogWrite(ena, constrain(speed, 0, 255));  // TODO: use map
     Serial.println(speed);
 }
 
