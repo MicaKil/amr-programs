@@ -5,7 +5,6 @@
 
 long duration;
 float distance;
-int i = 0;
 
 void setup() {
     pinMode(LED_PIN, OUTPUT);

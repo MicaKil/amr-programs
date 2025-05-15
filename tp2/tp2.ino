@@ -26,8 +26,7 @@ void setup() {
 
 void loop() {
     if (!Serial.available()) return;
-    String command = Serial.read();  // Es mala práctica readString() pq lee
-                                     // hasta el final de la línea (muy pesado)
+    String command = Serial.readStringUntil('\n');
     long speed = (command.toInt() * 0xFF) / 100;
     setMotor(speed);
     Serial.print("Set speed ");
